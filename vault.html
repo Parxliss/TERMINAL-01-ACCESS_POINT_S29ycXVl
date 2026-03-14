@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SCAN.BAT // VAULT</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .date-header {
+            color: #fff !important; font-weight: bold; font-size: 0.9rem; margin-top: 25px; 
+            margin-bottom: 10px; display: inline-block; letter-spacing: 2px;
+            border-left: 3px solid var(--glow-red); padding-left: 10px;
+        }
+    </style>
+</head>
+<body id="main-body">
+    <audio id="eerie-bg" loop><source src="eerie.mp3" type="audio/mpeg"></audio>
+    <audio id="alarm-bg" loop><source src="alarm.mp3" type="audio/mpeg"></audio>
+
+    <div class="vault-container" id="login-screen">
+        <h2>VAULT ACCESS GATEWAY</h2>
+        <input type="text" id="passcode" placeholder="PASSWORD REQUIRED" autocomplete="off">
+        <br>
+        <button onclick="verifyAccess()">INFILTRATE</button>
+    </div>
+
+    <div class="vault-container hidden" id="secret-content">
+        <h2 style="color:red;">PROJECT // ARCHIVE</h2>
+        <div class="archive-log" id="log-container" style="max-height: 400px;">
+            <div id="dynamic-area"></div>
+        </div>
+
+        <div id="reply-box" class="hidden" style="border-top: 1px solid #400; padding-top: 20px;">
+            <p style="font-size: 0.7rem; color: #666;">[SYSTEM]: UPLINK DETECTED. TRANSMIT RESPONSE?</p>
+            <input type="text" id="user-msg" placeholder="TYPE MESSAGE..." autocomplete="off">
+            <button onclick="triggerBreach()">SEND</button>
+        </div>
+
+        <div id="delete-status" class="hidden">
+            <p style="color: white; font-size: 0.8rem;">WIPING LOCAL DATA...</p>
+            <div style="border: 1px solid var(--glow-red); width: 100%; height: 15px; background: #200;">
+                <div id="progress-bar" style="background: var(--glow-red); height: 100%; width: 0%;"></div>
+            </div>
+            <p id="percent-text" style="color: var(--glow-red); font-weight: bold;">100%</p>
+        </div>
+
+        <button id="kill-btn" class="hidden" onclick="eraseEverything()">ERASE FOOTPRINT</button>
+    </div>
+
+    <script>
+        const eerie = document.getElementById('eerie-bg');
+        const alarm = document.getElementById('alarm-bg');
+        
+       const logData = [
+            { date: "DATE: XX/XX/XXXX", text: [
+                ["UPLINK_001", "My Lord, I bring a report from the surface realm."],
+                ["PRIORITY_Ω", "You rarely bring news worth speaking aloud."],
+                ["UPLINK_001", "Two mortals have begun shaping a kingdom. One builds meaning into stone. The other wanders, but gathers people like gravity gathers dust."],
+                ["PRIORITY_Ω", "Names."],
+                ["UPLINK_001", "Quen… and Sen. They’re building a kingdom of light."],
+                ["PRIORITY_Ω", "Builders of light, then."],
+                ["UPLINK_001", "There is a third who visits often."],
+                ["PRIORITY_Ω", "Explain."],
+                ["UPLINK_001", "His name is Sanguis. He disturbs their balance."],
+                ["PRIORITY_Ω", "Disturbs… or weakens?"],
+                ["UPLINK_001", "He trusts too easily."],
+                ["PRIORITY_Ω", "Good. Leave them alone for now."],
+                ["UPLINK_001", "My Lord?"],
+                ["PRIORITY_Ω", "Light grows brightest before it burns itself out."]
+            ]},
+            { date: "DATE: XX/XX/XXXX", text: [
+                ["UPLINK_001", "My Lord… your presence weakens."],
+                ["PRIORITY_Ω", "I am aware."],
+                ["UPLINK_001", "Their world grows joyful. New homes. New bonds. Laughter echoes through the valleys."],
+                ["PRIORITY_Ω", "Happiness is a disease. It convinces mortals that suffering has ended."],
+                ["UPLINK_001", "What is your command?"],
+                ["PRIORITY_Ω", "Find the fractures. Friendships. Promises. Doubts. Misery does not need to be created. Only… reminded."]
+            ]},
+            { date: "DATE: XX/XX/XXXX", text: [
+                ["UPLINK_001", "I have watched them closely."],
+                ["PRIORITY_Ω", "And?"],
+                ["UPLINK_001", "Quen grows exhausted. She searches for something buried long ago."],
+                ["PRIORITY_Ω", "The tree."],
+                ["UPLINK_001", "Yes, my Lord. The one she planted for Sanguis."],
+                ["PRIORITY_Ω", "And Sanguis? He does not understand her distance."],
+                ["PRIORITY_Ω", "Then he will. I intend to let them divide themselves."]
+            ]},
+            { date: "DATE: XX/XX/XXXX", text: [
+                ["PRIORITY_Ω", "UPLINK_001. Send the cherubim."],
+                ["UPLINK_001", "To where?"],
+                ["PRIORITY_Ω", "The shoreline. A church. No priest. The lost will guide themselves."]
+            ]},
+            { date: "DATE: XX/XX/XXXX", text: [
+                ["UPLINK_001", "The house has burned."],
+                ["PRIORITY_Ω", "And the boy?"],
+                ["UPLINK_001", "Alive. He believes Quen betrayed him."],
+                ["PRIORITY_Ω", "Of course he does. Mortals always do."],
+                ["UPLINK_001", "There was a single leaf left from the tree."],
+                ["PRIORITY_Ω", "Leave it. Hope makes misery deeper."]
+            ]},
+            { date: "DATE: XX/XX/XXXX", text: [
+                ["UPLINK_001", "He has arrived at the church. He believes I am a messenger of God."],
+                ["PRIORITY_Ω", "Technically correct."],
+                ["UPLINK_001", "He has signed the covenant."],
+                ["PRIORITY_Ω", "Then open the gate."]
+            ]},
+            { date: "DATE: XX/XX/XXXX", text: [
+                ["UPLINK_001", "My Lord… You are inside him now."],
+                ["PRIORITY_Ω", "Not inside. Within."],
+                ["UPLINK_001", "Does he know?"],
+                ["PRIORITY_Ω", "No. He will black out often."]
+            ]},
+            { date: "DATE: XX/XX/XXXX", text: [
+                ["UPLINK_001", "My Lord… Quen suspects something. Enough to write warnings."],
+                ["PRIORITY_Ω", "Remove her. Erase her."]
+            ]},
+            { date: "DATE: XX/XX/XXXX", text: [
+                ["UPLINK_001", "The task is complete. Her body has been sealed."],
+                ["PRIORITY_Ω", "And her soul?"],
+                ["UPLINK_001", "Torn from the Aether… weak and helpless. No one will find her."],
+                ["PRIORITY_Ω", "Someone might try. The one called Wilkovide? Then the story becomes interesting."]
+            ]}
+        ];
+
+        async function verifyAccess() {
+            const val = document.getElementById('passcode').value;
+            if (val === "S29ycXVl11") {
+                eerie.volume = 0.6; eerie.play();
+                alarm.volume = 0; alarm.play().then(() => { alarm.pause(); alarm.currentTime = 0; alarm.volume = 1; });
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('secret-content').classList.remove('hidden');
+
+                const dynamicArea = document.getElementById('dynamic-area');
+                const logBox = document.getElementById('log-container');
+
+                for (let entry of logData) {
+                    let section = document.createElement('div');
+                    section.className = 'date-header'; section.innerText = entry.date;
+                    dynamicArea.appendChild(section);
+                    for (let line of entry.text) {
+                        let p = document.createElement('div');
+                        p.className = 'log-entry';
+                        p.innerHTML = `<span class="sender-tag">${line[0]}</span><p></p>`;
+                        dynamicArea.appendChild(p);
+                        const textNode = p.querySelector('p');
+                        for (let char of line[1]) {
+                            textNode.textContent += char; logBox.scrollTop = logBox.scrollHeight;
+                            await new Promise(r => setTimeout(r, 20));
+                        }
+                        await new Promise(r => setTimeout(r, 600));
+                    }
+                }
+                document.getElementById('reply-box').classList.remove('hidden');
+                document.getElementById('user-msg').focus();
+            } else { alert("ACCESS DENIED"); }
+        }
+
+        function triggerBreach() {
+            if (!document.getElementById('user-msg').value) return;
+            document.getElementById('reply-box').classList.add('hidden');
+            document.body.classList.add('blood-red');
+            setTimeout(() => {
+                alert("SYSTEM ERROR: UNKNOWN PACKET INJECTION DETECTED");
+                document.getElementById('kill-btn').classList.remove('hidden');
+                alarm.play();
+                document.body.classList.add('alarm-shake');
+                const div = document.createElement('div');
+                div.innerHTML = `<div class="glitch-alert">SECURITY BREACH</div><p style="color:white; font-weight:bold;">AUTO-WIPE IN 15 SECONDS</p>`;
+                document.getElementById('dynamic-area').appendChild(div);
+                setTimeout(() => { if(!localStorage.getItem('system_purged')) window.location.href = "gate.html?triggerPop=true"; }, 15000);
+            }, 500);
+        }
+
+        function eraseEverything() {
+            document.getElementById('kill-btn').classList.add('hidden');
+            document.getElementById('delete-status').classList.remove('hidden');
+            let percent = 100;
+            let interval = setInterval(() => {
+                percent -= 1;
+                document.getElementById('progress-bar').style.width = percent + "%";
+                document.getElementById('percent-text').innerText = percent + "%";
+                if (percent <= 0) {
+                    clearInterval(interval);
+                    localStorage.setItem('system_purged', 'true');
+                    window.location.href = "gate.html?triggerPop=true";
+                }
+            }, 50); 
+        }
+    </script>
+</body>
+</html>

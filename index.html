@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AURELIS_OS // WARNING</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="content-wrap" class="terminal" style="border-color: #444; color: #888;">
+        <h2 style="color: #ff1111;">!! UNAUTHORIZED ACCESS WARNING !!</h2>
+        <p>This terminal is property of the S29ycXVl congregation</p>
+        <p>Continued access constitutes a breach of the Privacy Act of 111111.</p>
+        <p>System sounds and monitoring will be active.</p>
+        <br>
+        <p>Do you wish to proceed?</p>
+        <button onclick="startExperience()" style="background: transparent; border: 1px solid #888; color: #888;">[ PROCEED ]</button>
+    </div>
+
+    <script>
+        window.onload = function() {
+            if (localStorage.getItem('system_purged') === 'true') {
+                document.getElementById('content-wrap').innerHTML = `
+                    <h1 style="color:red;">ACCESS REVOKED</h1>
+                    <p>Your connection has been severed by PRIORITY_Ω.</p>
+                `;
+            }
+        };
+
+        function startExperience() {
+            sessionStorage.setItem('allowSound', 'true');
+            window.location.href = "gate.html";
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.shiftKey && e.key === 'R') {
+                localStorage.clear();
+                sessionStorage.clear();
+                location.reload();
+            }
+        });
+    </script>
+</body>
+</html>

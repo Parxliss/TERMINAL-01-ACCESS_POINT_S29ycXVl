@@ -1,0 +1,86 @@
+:root {
+    --glow-red: #ff1111;
+    --glow-green: #00ff41;
+    --bg-black: #050505;
+}
+
+body {
+    background-color: var(--bg-black);
+    color: var(--glow-green);
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    transition: background 10s ease;
+}
+
+body::before {
+    content: " ";
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.terminal, .vault-container {
+    border: 1px solid var(--glow-green);
+    padding: 60px;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 10;
+    max-width: 700px;
+    text-align: center;
+}
+
+.vault-container { border-color: var(--glow-red); color: var(--glow-red); }
+.hidden { display: none !important; }
+
+/* HIDDEN COMMAND STYLING */
+.hidden-cmd {
+    color: #000; /* Black text on black bg */
+    cursor: text;
+}
+
+.archive-log {
+    text-align: left;
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 20px;
+    background: rgba(10, 0, 0, 0.9);
+    border: 1px solid #400;
+    margin-bottom: 20px;
+}
+
+.log-entry { margin-bottom: 10px; border-bottom: 1px solid #200; padding-bottom: 5px; font-size: 0.85rem; }
+.sender-tag { color: #fff; background: var(--glow-red); font-size: 0.7rem; padding: 2px 6px; font-weight: bold; margin-right: 10px; }
+
+.blood-red { background-color: #300 !important; }
+
+.alarm-shake { animation: constantShake 0.4s infinite; }
+@keyframes constantShake {
+    0% { transform: translate(2px, 2px); }
+    50% { transform: translate(-3px, -1px); }
+    100% { transform: translate(1px, -2px); }
+}
+
+.glitch-text { font-size: 2.2rem; animation: glitch 1.5s linear infinite; letter-spacing: 4px; }
+@keyframes glitch {
+    0% { text-shadow: 1px 0 red, -1px 0 blue; }
+    50% { text-shadow: -2px 0 var(--glow-green), 2px 0 blue; }
+    100% { text-shadow: 1px 0 red, -1px 0 blue; }
+}
+
+.glitch-alert { background: #ff0000; color: #fff; padding: 10px; font-weight: bold; border: 1px solid white; margin-bottom: 10px; }
+
+input { background: transparent; border: 1px solid var(--glow-red); color: var(--glow-red); padding: 10px; font-family: inherit; margin-top: 15px; width: 80%; outline: none; }
+button { background: var(--glow-red); border: none; color: #000; padding: 12px 25px; font-family: inherit; font-weight: bold; cursor: pointer; margin-top: 20px; }
+button:hover { background: white; color: black; }
+
+.typing-bubble { display: flex; gap: 5px; padding: 10px; justify-content: center; }
+.dot { width: 6px; height: 6px; background: var(--glow-red); border-radius: 50%; animation: bounce 1.2s infinite ease-in-out; }
+@keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.1); } }

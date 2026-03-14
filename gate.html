@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TERMINAL_01 // ACCESS_POINT</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        #popup-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); display: flex;
+            justify-content: center; align-items: center; z-index: 1000;
+        }
+        #popup-box {
+            background: #000; border: 2px solid var(--glow-red); padding: 30px;
+            max-width: 400px; text-align: center; box-shadow: 0 0 20px var(--glow-red);
+            animation: popGlitch 0.2s infinite alternate;
+        }
+        @keyframes popGlitch {
+            0% { transform: translate(1px, 1px); border-color: red; }
+            100% { transform: translate(-1px, -1px); border-color: #600; }
+        }
+        .close-btn {
+            margin-top: 20px; background: transparent; border: 1px solid var(--glow-red);
+            color: var(--glow-red); padding: 5px 15px; cursor: pointer; font-family: inherit;
+        }
+        .close-btn:hover { background: var(--glow-red); color: black; }
+    </style>
+</head>
+<body>
+    <audio id="eerie-bg" loop><source src="eerie.mp3" type="audio/mpeg"></audio>
+
+    <div id="popup-overlay" class="hidden">
+        <div id="popup-box">
+            <h2 style="color: var(--glow-red); margin-top: 0;">CRITICAL_OVERRIDE</h2>
+            <p style="color: white; line-height: 1.6;">
+                WARNING: YOU HAVE 90 MINUTES REMAINING BEFORE YOU FIND 
+                <span style="color: var(--glow-red); font-weight: bold;">ℌ𝔢𝔯 𝔅𝔬𝔡𝔶 𝔦𝔫 𝔱𝔥𝔢 𝔄𝔰𝔥𝔢𝔰.</span>
+            </p>
+            <button class="close-btn" onclick="closePopup()">[ DISMISS_WARNING ]</button>
+        </div>
+    </div>
+
+    <div id="main-content" class="terminal">
+        <h1 class="glitch-text">NETWORK_BREACHED</h1>
+        <hr style="border: 0.5px solid var(--glow-green); margin: 20px 0;">
+        <p>AURELIS_OS STATUS: [DISABLED]</p>
+        <p>SECTOR: ALSTROMERIA (Basement 04)</p>
+        <p id="command-line">Type 'help' for commands...</p>
+        <input type="text" id="terminal-input" autofocus style="opacity: 0; position: absolute; left: -9999px;">
+    </div>
+
+    <script>
+        const input = document.getElementById('terminal-input');
+        const display = document.getElementById('command-line');
+        const eerie = document.getElementById('eerie-bg');
+
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('triggerPop') === 'true') {
+                document.getElementById('popup-overlay').classList.remove('hidden');
+            }
+            if (sessionStorage.getItem('allowSound') === 'true') {
+                eerie.volume = 0.5; eerie.play().catch(e => console.log("Audio interaction needed"));
+            }
+            if (localStorage.getItem('system_purged') === 'true') {
+                document.getElementById('main-content').innerHTML = `
+                    <h1 style='color:red;'>PURGE_SUCCESSFUL</h1>
+                    <p>Footprint: 0%</p>
+                    <p style="color: #444; font-size: 0.8rem; margin-top: 20px;">[SYSTEM]: Connection Severed Forever.</p>
+                `;
+            }
+        };
+
+        function closePopup() { document.getElementById('popup-overlay').classList.add('hidden'); input.focus(); }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = input.value.toLowerCase().trim();
+                if (cmd === "infiltrate") {
+                    display.innerText = "ACCESS GRANTED. REDIRECTING...";
+                    setTimeout(() => { window.location.href = "vault.html"; }, 1500);
+                } else if (cmd === "help") {
+                    display.innerHTML = "Available: STATUS, DIR, CLEAR, <span class='hidden-cmd'>INFILTRATE</span>";
+                }
+                input.value = "";
+            }
+        });
+        window.addEventListener('keydown', (e) => {
+            if (e.shiftKey && e.key === 'R') {
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.href = "gate.html"; 
+            }
+        });
+    </script>
+</body>
+</html>
